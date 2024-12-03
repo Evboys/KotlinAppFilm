@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Movie
+import androidx.compose.material.icons.filled.MusicNote
 
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tv
@@ -54,6 +55,8 @@ data class DetailsFilm(val id: Int)
 data class DetailsActeur(val id:Int)
 @Serializable
 data class DetailsSerie(val id:Int)
+@Serializable
+class Music()
 
 class MainActivity : ComponentActivity() {
 
@@ -175,6 +178,15 @@ class MainActivity : ComponentActivity() {
                 }, bottomBar = {
                     NavigationBar {
                         NavigationBarItem(
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.MusicNote,
+                                contentDescription = "Affichage de la playlist"
+                            )
+                        }, label = { Text("Playlist") },
+                        selected = currentDestination?.hasRoute<Music>() == true,
+                        onClick = { navController.navigate(Music()) })
+                        NavigationBarItem(
                             icon = {
                                 Icon(
                                     imageVector = Icons.Default.Movie,
@@ -230,7 +242,11 @@ class MainActivity : ComponentActivity() {
                         }
                         composable<DetailsSerie> { backStackEntry ->
                             val details: DetailsSerie = backStackEntry.toRoute()
-                            DetailSerieScreen(details.id,navController) }
+                            DetailSerieScreen(details.id,navController)
+                        }
+                        composable<Music> {
+                            PlaylistScreen()
+                        }
                     }
                 }
             }

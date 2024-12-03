@@ -1,7 +1,10 @@
 package com.example.applicationfilmkotlin
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplicationtest.playlistjson
+import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
@@ -14,6 +17,9 @@ public class MainViewModel : ViewModel() {
     val detailMovie = MutableStateFlow<DetailMovie?>(null)
     val detailActor = MutableStateFlow<DetailActor?>(null)
     val detailSerie = MutableStateFlow<DetailSerie?>(null)
+
+    val playlist = MutableStateFlow<List<Playlist>>(listOf())
+
     val apikey = "be1ca8af0da3936dcdb2aeaad464d374"
     val language= "fr-FR"
     val service = Retrofit.Builder()
@@ -87,5 +93,13 @@ public class MainViewModel : ViewModel() {
             detailActor.value = service.detailActor(id,apikey,language)
         }
     }
-
+    fun fetchPlaylist(): Playlist{
+        val moshi = Moshi.Builder().build()
+        return moshi.adapter(Playlist::class.java).fromJson(playlistjson)!!
+    }
+    fun playList(){
+        viewModelScope.launch {
+            playlist.value = fetchPlaylist()
+        }
+    }
 }
